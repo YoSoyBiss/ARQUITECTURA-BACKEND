@@ -2,11 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProductoController; // Si está en la subcarpeta Api
+use App\Http\Controllers\Api\ProductoController;
 
-Route::get('/productos', [ProductoController::class, 'index']);
 
-Route::post('/productos', [ProductoController::class, 'store']);
+
+Route::apiResource('productos', ProductoController::class);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
