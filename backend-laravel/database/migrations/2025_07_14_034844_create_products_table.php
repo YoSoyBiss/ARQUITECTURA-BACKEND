@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('productos', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
-            $table->string('autor');
-            $table->string('editorial');
+            $table->string('title');
+            $table->string('author');
+            $table->string('publisher');
             $table->integer('stock');
-            $table->timestamps(); // Opcional, pero recomendado
+            $table->timestamps(); // Recommended: created_at and updated_at
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('productos');
+        Schema::dropIfExists('products');
     }
 };

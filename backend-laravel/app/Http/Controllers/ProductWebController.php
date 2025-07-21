@@ -13,7 +13,7 @@ class ProductoWebController extends Controller
     public function __construct()
     {
         // Usamos la URL base desde el archivo .env
-        $this->apiUrl = env('API_URL', 'http://127.0.0.1:8000') . '/api/productos';
+        $this->apiUrl = env('API_URL', 'http://127.0.0.1:8000') . '/api/products';
     }
 
     // Mostrar todos los productos
@@ -21,7 +21,7 @@ class ProductoWebController extends Controller
     {
         try {
             $response = Http::get($this->apiUrl);
-            $productos = $response->successful() ? $response->json()['productos'] : [];
+            $productos = $response->successful() ? $response->json()['products'] : [];
 
             return view('productos.index', compact('productos'));
         } catch (\Exception $e) {
@@ -40,9 +40,9 @@ class ProductoWebController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'titulo' => 'required|string|max:255',
-            'autor' => 'required|string|max:255',
-            'editorial' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'publisher' => 'required|string|max:255',
             'stock' => 'required|integer|min:0'
         ]);
 
@@ -77,7 +77,7 @@ class ProductoWebController extends Controller
                 return redirect('/productos')->withErrors('No se pudo obtener el producto.');
             }
 
-            $producto = $response->json()['producto'] ?? $response->json();
+            $producto = $response->json()['product'] ?? $response->json();
 
             return view('productos.modificar', compact('producto'));
         } catch (\Exception $e) {
@@ -90,9 +90,9 @@ class ProductoWebController extends Controller
     public function actualizar(Request $request, $id)
     {
         $request->validate([
-            'titulo' => 'required|string|max:255',
-            'autor' => 'required|string|max:255',
-            'editorial' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'publisher' => 'required|string|max:255',
             'stock' => 'required|integer|min:0'
         ]);
 
