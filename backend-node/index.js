@@ -24,6 +24,9 @@ app.use('/api/users', usersRouter);
 const salesRouter = require('./routes/Sales');
 app.use('/api/sales', salesRouter);
 
+const authRoutes = require('./routes/auth.routes');
+app.use('/api', authRoutes);
+
 
 // Inicio del servidor
 const PORT = process.env.PORT || 5000;
