@@ -6,37 +6,36 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class ProductoWebController extends Controller
+class ProductWebController extends Controller
 {
     protected $apiUrl;
 
     public function __construct()
     {
-        // Usamos la URL base desde el archivo .env
         $this->apiUrl = env('API_URL', 'http://127.0.0.1:8000') . '/api/products';
     }
 
-    // Mostrar todos los productos
+    // Display all products
     public function index()
     {
         try {
             $response = Http::get($this->apiUrl);
-            $productos = $response->successful() ? $response->json()['products'] : [];
+            $products = $response->successful() ? $response->json()['products'] : [];
 
-            return view('productos.index', compact('productos'));
+            return view('products.index', compact('products'));
         } catch (\Exception $e) {
-            Log::error("Error al obtener productos: " . $e->getMessage());
-            return view('productos.index', ['productos' => []])->withErrors('Error al conectar con la API');
+            Log::error("Failed to fetch products: " . $e->getMessage());
+            return view('products.index', ['products' => []])->withErrors('Failed to connect to the API');
         }
     }
 
-    // Mostrar formulario para crear producto
+    // Show form to create a new product
     public function create()
     {
-        return view('productos.create');
+        return view('products.create');
     }
 
-    // Guardar nuevo producto en la API
+    // Store new product via API
     public function store(Request $request)
     {
         $request->validate([
@@ -50,7 +49,7 @@ class ProductoWebController extends Controller
             $response = Http::post($this->apiUrl, $request->all());
 
             if ($response->successful()) {
-                return redirect('/productos')->with('success', '¡Producto creado correctamente!');
+                return redirect('/products')->with('success', 'Product created successfully!');
             }
 
             if ($response->status() === 422) {
@@ -58,36 +57,36 @@ class ProductoWebController extends Controller
                 return back()->withErrors($errors)->withInput();
             }
 
-            Log::error('Error al crear producto: ' . $response->body());
-            return back()->with('error', 'Error en el servidor API')->withInput();
+            Log::error('Error creating product: ' . $response->body());
+            return back()->with('error', 'API server error')->withInput();
 
         } catch (\Exception $e) {
-            Log::error('Excepción al conectar con API: ' . $e->getMessage());
-            return back()->with('error', 'No se pudo conectar con el servidor')->withInput();
+            Log::error('Exception connecting to API: ' . $e->getMessage());
+            return back()->with('error', 'Failed to connect to the API server')->withInput();
         }
     }
 
-    // Mostrar formulario para editar un producto
-    public function editar($id)
+    // Show form to edit a product
+    public function edit($id)
     {
         try {
             $response = Http::get("{$this->apiUrl}/{$id}");
 
             if (!$response->successful()) {
-                return redirect('/productos')->withErrors('No se pudo obtener el producto.');
+                return redirect('/products')->withErrors('Could not fetch the product.');
             }
 
-            $producto = $response->json()['product'] ?? $response->json();
+            $product = $response->json()['product'] ?? $response->json();
 
-            return view('productos.modificar', compact('producto'));
+            return view('products.edit', compact('product'));
         } catch (\Exception $e) {
-            Log::error("Error al obtener producto: " . $e->getMessage());
-            return redirect('/productos')->withErrors('Error al conectar con la API');
+            Log::error("Error fetching product: " . $e->getMessage());
+            return redirect('/products')->withErrors('Failed to connect to the API');
         }
     }
 
-    // Actualizar producto
-    public function actualizar(Request $request, $id)
+    // Update a product
+    public function update(Request $request, $id)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -100,7 +99,7 @@ class ProductoWebController extends Controller
             $response = Http::put("{$this->apiUrl}/{$id}", $request->all());
 
             if ($response->successful()) {
-                return redirect('/productos')->with('success', 'Producto actualizado correctamente.');
+                return redirect('/products')->with('success', 'Product updated successfully.');
             }
 
             if ($response->status() === 422) {
@@ -108,29 +107,29 @@ class ProductoWebController extends Controller
                 return back()->withErrors($errors)->withInput();
             }
 
-            Log::error("Error al actualizar producto: " . $response->body());
-            return back()->with('error', 'Error inesperado al actualizar')->withInput();
+            Log::error("Error updating product: " . $response->body());
+            return back()->with('error', 'Unexpected error while updating')->withInput();
         } catch (\Exception $e) {
-            Log::error("Excepción al actualizar producto: " . $e->getMessage());
-            return back()->with('error', 'No se pudo conectar con la API')->withInput();
+            Log::error("Exception while updating product: " . $e->getMessage());
+            return back()->with('error', 'Failed to connect to the API')->withInput();
         }
     }
 
-    // Eliminar producto
-    public function eliminar($id)
+    // Delete a product
+    public function destroy($id)
     {
         try {
             $response = Http::delete("{$this->apiUrl}/{$id}");
 
             if ($response->successful()) {
-                return redirect('/productos')->with('success', 'Producto eliminado correctamente.');
+                return redirect('/products')->with('success', 'Product deleted successfully.');
             }
 
-            Log::error("Error al eliminar producto: " . $response->body());
-            return back()->with('error', 'Error al eliminar el producto');
+            Log::error("Error deleting product: " . $response->body());
+            return back()->with('error', 'Failed to delete the product');
         } catch (\Exception $e) {
-            Log::error("Excepción al eliminar producto: " . $e->getMessage());
-            return back()->with('error', 'No se pudo conectar con la API');
+            Log::error("Exception while deleting product: " . $e->getMessage());
+            return back()->with('error', 'Failed to connect to the API');
         }
     }
 }

@@ -1,14 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductWebController;
 
-use App\Http\Controllers\ProductoController;
-
-Route::get('/productos/crear', function () {
-    return view('productos.create');
+Route::get('/products/create', function () {
+    return view('products.create');
 });
-Route::post('/productos', [ProductoWebController::class, 'store'])->name('productos.store');
+
+Route::post('/products', [ProductWebController::class, 'store'])->name('products.store');
 
 Route::get('/', function () {
     return view('welcome');
 });
+
