@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('author');
             $table->string('publisher');
-            $table->integer('stock');
-            $table->timestamps(); // Recommended: created_at and updated_at
+            $table->unsignedInteger('stock'); // no negative numbers
+            $table->timestamps(); // created_at and updated_at
         });
     }
 
