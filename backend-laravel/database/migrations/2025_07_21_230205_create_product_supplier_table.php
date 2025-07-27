@@ -1,6 +1,5 @@
 <?php
 
-<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,7 +16,7 @@ return new class extends Migration
             $table->id();
 
             // Reference to the product (MySQL)
-            $table->foreignId('product_id')->constrained('productos')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
 
             // Reference to the supplier (stored as MongoDB _id)
             $table->string('supplier_mongo_id'); // MongoDB user _id
