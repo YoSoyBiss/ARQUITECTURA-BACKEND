@@ -100,3 +100,28 @@ exports.getUserById = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener el usuario' });
   }
 };
+
+// ✅ Login de usuario
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+
+    const userObj = user.toObject();
+    delete userObj.password;
+
+    res.json({ message: 'Login exitoso', user: userObj });
+  } catch (error) {
+    console.error('[UserController] loginUser:', error);
+    res.status(500).json({ message: 'Error en el servidor al iniciar sesión' });
+  }
+};
