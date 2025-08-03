@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('author');
             $table->string('publisher');
             $table->unsignedInteger('stock'); // no negative numbers
+            $table->decimal('price', 8, 2); // Puedes ajustar la precisión si lo deseas
             $table->timestamps(); // created_at and updated_at
         });
     }
