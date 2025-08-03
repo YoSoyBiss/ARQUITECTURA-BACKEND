@@ -9,10 +9,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    match: [/.+\@.+\..+/, 'Formato de correo inválido']
   },
 
-  password: { type: String, required: true },
+  password: {
+    type: String,
+    required: true,
+    minlength: [6, 'La contraseña debe tener al menos 6 caracteres']
+  },
 
   role: {
     type: String,
@@ -20,6 +25,14 @@ const userSchema = new mongoose.Schema({
     required: true
   }
 }, { timestamps: true });
+
+// Quitar contraseña al exportar JSON
+userSchema.set('toJSON', {
+  transform: function (doc, ret) {
+    delete ret.password;
+    return ret;
+  }
+});
 
 // Hash de contraseña antes de guardar
 userSchema.pre('save', async function (next) {
