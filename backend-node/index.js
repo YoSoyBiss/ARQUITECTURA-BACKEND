@@ -25,7 +25,7 @@ app.use('/api/users', require('./routes/Users'));
 
 // Si tienes rutas de ventas, asegúrate que exista el archivo routes/Sales.js,
 // sino comenta también:
-// app.use('/api/sales', require('./routes/Sales'));
+app.use('/api/sales', require('./routes/Sales'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
