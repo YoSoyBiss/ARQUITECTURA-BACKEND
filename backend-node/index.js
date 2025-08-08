@@ -6,6 +6,12 @@ const cors = require('cors');
 const app = express();
 app.use(cors()); // Permite peticiones del frontend
 app.use(express.json()); // Parsear JSON
+// ...
+app.use('/api/users', require('./routes/Users'));
+app.use('/api/roles', require('./routes/Roles')); // <-- NUEVO
+app.use('/api/sales', require('./routes/Sales'));
+// ...
+
 
 // Conexión a MongoDB
 mongoose.connect(process.env.MONGODB_URI, {

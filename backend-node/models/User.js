@@ -20,10 +20,11 @@ const userSchema = new mongoose.Schema({
   },
 
   role: {
-    type: String,
-    enum: ['admin', 'seller', 'consultant'],
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Role',
     required: true
   }
+
 }, { timestamps: true });
 
 // Quitar contraseña al exportar JSON
