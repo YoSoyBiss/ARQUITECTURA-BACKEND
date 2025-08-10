@@ -1,25 +1,40 @@
 <?php
 
+// app/Models/Product.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+        protected $fillable = ['title','publisher_id','stock','price']; // <- quita 'author' y 'publisher' (string)
 
-    protected $fillable = ['title', 'author', 'publisher', 'stock', 'price'];
 
-        public function suppliers()
+    public function authors() {
+        return $this->belongsToMany(Author::class);
+    }
+
+    public function genres() {
+        return $this->belongsToMany(Genre::class);
+    }
+
+    public function images() {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function mainImage() {
+        return $this->hasOne(ProductImage::class)->where('is_main', true);
+    }
+    public function publisher()
     {
-        // Since suppliers are in Mongo, this returns the pivot info only
-        return $this->belongsToMany(
-            Supplier::class,         // assuming you create a Supplier model (optional)
-            'product_supplier',      // pivot table name
-            'product_id',            // foreign key on pivot table for this model
-            'supplier_mongo_id',     // foreign key on pivot table for the other model (stored as string)
-            'id',                   // local key on this model
-            '_id'                   // local key on Supplier model (Mongo ObjectId)
-        );
-
+        return $this->belongsTo(Publisher::class, 'publisher_id'); 
+    }
+    // app/Models/Product.php
+public function supplierCost()  // o supplierPrice
+{
+    return $this->hasOne(ProductSupplier::class);
 }
+
+
+
 }
