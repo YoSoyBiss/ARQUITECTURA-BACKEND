@@ -1,16 +1,22 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const Role = require('../models/Role');
+const mongoose = require('mongoose');
+
+// ... resto de imports
+
 
 // ✅ Obtener todos los usuarios (solo name, role, email)
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, 'name role email');
+    const users = await User.find({}, 'name role email').populate('role', 'name');
     res.json(users);
   } catch (error) {
     console.error('[UserController] getAllUsers:', error);
     res.status(500).json({ error: 'Error al obtener los usuarios' });
   }
 };
+
 
 // ✅ Eliminar usuario por ID
 exports.deleteUser = async (req, res) => {
@@ -26,14 +32,27 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// ✅ Actualizar usuario por ID
+
+
 exports.updateUser = async (req, res) => {
   console.log('Datos recibidos para actualizar:', req.body);
   try {
     const { name, password, role } = req.body;
     const updateData = {};
+
     if (name) updateData.name = name;
-    if (role) updateData.role = role;
+
+    if (role) {
+      // Validar que role sea un ObjectId válido y exista
+      if (!mongoose.Types.ObjectId.isValid(role)) {
+        return res.status(400).json({ error: 'Rol inválido (formato incorrecto)' });
+      }
+      const roleDoc = await Role.findById(role);
+      if (!roleDoc) {
+        return res.status(400).json({ error: 'Rol no encontrado' });
+      }
+      updateData.role = roleDoc._id;
+    }
 
     if (password) {
       const salt = await bcrypt.genSalt(10);
@@ -44,7 +63,7 @@ exports.updateUser = async (req, res) => {
       req.params.id,
       updateData,
       { new: true, select: '-password' }
-    );
+    ).populate('role', 'name');  // opcional: poblar info del rol para la respuesta
 
     if (!updatedUser) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -59,9 +78,9 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// ✅ Registrar nuevo usuario (rol por defecto)
+
 exports.registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;  // recuerda que ahora recibes role como id
 
   try {
     const existingUser = await User.findOne({ email });
@@ -69,11 +88,17 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ message: 'Ya existe una cuenta con ese correo' });
     }
 
+    // Busca el rol por _id (role viene del select)
+    const roleDoc = await Role.findById(role);
+    if (!roleDoc) {
+      return res.status(400).json({ message: 'Rol no válido' });
+    }
+
     const user = new User({
       name,
       email,
       password,
-      role: 'consultant' // Rol por defecto
+      role: roleDoc._id
     });
 
     await user.save();
@@ -87,6 +112,7 @@ exports.registerUser = async (req, res) => {
     res.status(500).json({ message: 'Error del servidor al registrar' });
   }
 };
+
 // Obtener usuario por ID (sin password)
 exports.getUserById = async (req, res) => {
   try {
