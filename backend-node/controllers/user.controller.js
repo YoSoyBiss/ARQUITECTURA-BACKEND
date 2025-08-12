@@ -128,22 +128,31 @@ exports.getUserById = async (req, res) => {
 };
 
 // ✅ Login de usuario
+// ✅ Login de usuario
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    // 🔹 Buscar usuario y popular el nombre del rol
+    const user = await User.findOne({ email }).populate('role', 'name');
     if (!user) {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 
+    // 🔹 Verificar contraseña
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 
+    // 🔹 Convertir a objeto plano y eliminar password
     const userObj = user.toObject();
     delete userObj.password;
+
+    // 🔹 Reemplazar el objeto de rol por su nombre
+    if (userObj.role && userObj.role.name) {
+      userObj.role = userObj.role.name;
+    }
 
     res.json({ message: 'Login exitoso', user: userObj });
   } catch (error) {
@@ -151,3 +160,4 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: 'Error en el servidor al iniciar sesión' });
   }
 };
+
