@@ -14,10 +14,10 @@ class ProductController extends Controller
     /**
      * GET /api/products
      * Filtros soportados:
-     *  - q (string)
-     *  - author (string) | author_ids[] (array<int>)
-     *  - genre (string)  | genre_ids[]  (array<int>)
-     *  - publisher_id (int)
+     * - q (string)
+     * - author (string) | author_ids[] (array<int>)
+     * - genre (string)  | genre_ids[]  (array<int>)
+     * - publisher_id (int)
      */
     public function index(Request $request)
     {
@@ -46,12 +46,12 @@ class ProductController extends Controller
             $genreText  = $request->query('genre');
 
             $products = Product::with([
-                    'publisher:id,name',
-                    'authors:id,name',
-                    'genres:id,name',
-                    'images',
-                    'supplierCost:id,product_id,precio_proveedor',
-                ])
+                'publisher:id,name',
+                'authors:id,name',
+                'genres:id,name',
+                'images',
+                'supplierCost:id,product_id,precio_proveedor',
+            ])
                 ->when($q, fn($query) => $query->where('title','like',"%{$q}%"))
                 ->when($authorText, fn($q1)=>$q1->whereHas('authors', fn($a)=>$a->where('name','like',"%{$authorText}%")))
                 ->when(!empty($authorIds), fn($q1)=>$q1->whereHas('authors', fn($a)=>$a->whereIn('authors.id', $authorIds)))
@@ -82,22 +82,25 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         try {
+            // Añadir log para depurar los datos de la petición
+            Log::info('Petición POST a /api/products', ['request_data' => $request->all()]);
+
             $validated = $request->validate([
-                'title'            => 'required|string|max:255',
-                'publisher_id'     => 'required|integer|exists:publishers,id',
-                'stock'            => 'required|integer|min:0',
-                'price'            => 'required|numeric|min:0',
-                'preciodeproveedor'=> 'nullable|numeric|min:0',
+                'title'             => 'required|string|max:255',
+                'publisher_id'      => 'required|integer|exists:publishers,id',
+                'stock'             => 'required|integer|min:0',
+                'price'             => 'required|numeric|min:0',
+                'preciodeproveedor' => 'nullable|numeric|min:0',
 
-                'author_ids'       => 'sometimes|array',
-                'author_ids.*'     => 'integer|exists:authors,id',
-                'genre_ids'        => 'sometimes|array',
-                'genre_ids.*'      => 'integer|exists:genres,id',
+                'author_ids'        => 'sometimes|array',
+                'author_ids.*'      => 'integer|exists:authors,id',
+                'genre_ids'         => 'sometimes|array',
+                'genre_ids.*'       => 'integer|exists:genres,id',
 
-                'images'           => 'sometimes|array',
-                'images.*.url'     => 'required_with:images|string',
-                'images.*.alt'     => 'nullable|string',
-                'images.*.is_main' => 'boolean'
+                'images'            => 'sometimes|array',
+                'images.*.url'      => 'required_with:images|string',
+                'images.*.alt'      => 'nullable|string',
+                'images.*.is_main'  => 'boolean'
             ]);
 
             $product = Product::create([
@@ -165,22 +168,25 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            // Añadir log para depurar los datos de la petición
+            Log::info('Petición PUT/PATCH a /api/products/' . $id, ['request_data' => $request->all()]);
+
             $validated = $request->validate([
-                'title'            => 'sometimes|required|string|max:255',
-                'publisher_id'     => 'sometimes|required|integer|exists:publishers,id',
-                'stock'            => 'sometimes|required|integer|min:0',
-                'price'            => 'sometimes|required|numeric|min:0',
-                'preciodeproveedor'=> 'nullable|numeric|min:0',
+                'title'             => 'sometimes|required|string|max:255',
+                'publisher_id'      => 'sometimes|required|integer|exists:publishers,id',
+                'stock'             => 'sometimes|required|integer|min:0',
+                'price'             => 'sometimes|required|numeric|min:0',
+                'preciodeproveedor' => 'nullable|numeric|min:0',
 
-                'author_ids'       => 'sometimes|array',
-                'author_ids.*'     => 'integer|exists:authors,id',
-                'genre_ids'        => 'sometimes|array',
-                'genre_ids.*'      => 'integer|exists:genres,id',
+                'author_ids'        => 'sometimes|array',
+                'author_ids.*'      => 'integer|exists:authors,id',
+                'genre_ids'         => 'sometimes|array',
+                'genre_ids.*'       => 'integer|exists:genres,id',
 
-                'images'           => 'sometimes|array',
-                'images.*.url'     => 'required_with:images|string',
-                'images.*.alt'     => 'nullable|string',
-                'images.*.is_main' => 'boolean'
+                'images'            => 'sometimes|array',
+                'images.*.url'      => 'required_with:images|string',
+                'images.*.alt'      => 'nullable|string',
+                'images.*.is_main'  => 'boolean'
             ]);
 
             $product = Product::findOrFail($id);
@@ -249,17 +255,17 @@ class ProductController extends Controller
             'authors'           => $p->authors->map(fn($a)=>['id'=>$a->id,'name'=>$a->name])->values(),
             'genres'            => $p->genres->map(fn($g)=>['id'=>$g->id,'name'=>$g->name])->values(),
             'images'            => $p->images->map(fn($i)=>[
-                                    'id'=>$i->id,
-                                    'url'=>$i->url,
-                                    'alt'=>$i->alt,
-                                    'is_main'=>(bool)$i->is_main,
-                                  ])->values(),
+                                        'id'=>$i->id,
+                                        'url'=>$i->url,
+                                        'alt'=>$i->alt,
+                                        'is_main'=>(bool)$i->is_main,
+                                      ])->values(),
             'stock'             => (int) $p->stock,
             'price'             => (float) $p->price,
             // Campo nuevo para el front
             'preciodeproveedor' => optional($p->supplierCost)->precio_proveedor !== null
-                                    ? (float) $p->supplierCost->precio_proveedor
-                                    : null,
+                                        ? (float) $p->supplierCost->precio_proveedor
+                                        : null,
             'created_at'        => optional($p->created_at)->toISOString(),
         ];
     }
