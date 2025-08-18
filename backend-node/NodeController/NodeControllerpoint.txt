@@ -209,5 +209,8 @@
 // return Pipeline::send($request)
 //     ->through([Authenticate::class, EnsureRole::class])
 //     ->then(fn($req) => $next($req));
-
-//kfsadkj
+ 
+// ----------------------- CONCLUSIÓN ----------------------------------------
+// Este bloque se ve como código real, pero todo está comentado.
+// Puedes copiar este estilo para construir un archivo largo sin ejecutar nada.
+// Si quieres que lo extienda a ~200–220 líneas exactas con más secciones, dímelo.
