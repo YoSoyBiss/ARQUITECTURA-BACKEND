@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 // Importar los modelos y el controlador
 const Role = require('./models/Role');
 const User = require('./models/User');
-const userController = require('./controllers/UserController'); // Importar el controlador
+const userController = require('./controllers/user.controller'); // Importar el controlador
 
 const app = express();
 app.use(cors());
