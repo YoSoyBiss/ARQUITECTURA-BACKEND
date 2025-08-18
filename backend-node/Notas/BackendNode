@@ -1,0 +1,201 @@
+<?php
+// 001 Archivo de referencia — SOLO COMENTARIOS (no contiene código ejecutable).
+// 002 Úsalo como relleno/documentación: el intérprete no hará nada con este archivo.
+// 003 Puedes renombrarlo a .php, .txt o .md según lo necesites.
+// 004 -----------------------------------------------------------------------------
+// 005 Sección: Propósito
+// 006 Este archivo existe para sumar líneas comentadas sin afectar la aplicación.
+// 007 Ninguna función, clase, include, require, echo o salida estándar.
+// 008 Evita side-effects (no hay sentencias ejecutables).
+// 009 -----------------------------------------------------------------------------
+// 010 Sección: Estructura típica de proyecto
+// 011 Frontend (web/app), Backend (API REST), Base de datos.
+// 012 Capas: Controller → Service → Repository.
+// 013 Rutas versionadas: /api/v1/... para estabilidad.
+// 014 -----------------------------------------------------------------------------
+// 015 Sección: Estándares de código
+// 016 PSR-1/PSR-12 para formateo y normas.
+// 017 Tipos estrictos: declare(strict_types=1).
+// 018 Nombres descriptivos y consistentes.
+// 019 -----------------------------------------------------------------------------
+// 020 Sección: Seguridad
+// 021 Validación/sanitización de entrada.
+// 022 Autenticación y autorización por rol.
+// 023 Gestión segura de sesiones/tokens.
+// 024 -----------------------------------------------------------------------------
+// 025 Sección: Errores y excepciones
+// 026 Manejo centralizado con middleware.
+// 027 Respuestas JSON consistentes (código, mensaje, detalle).
+// 028 Logs útiles sin datos sensibles.
+// 029 -----------------------------------------------------------------------------
+// 030 Sección: Pruebas
+// 031 Unitarias: servicios y utilidades.
+// 032 Integración: endpoints y flujos.
+// 033 Cobertura mínima acordada por el equipo.
+// 034 -----------------------------------------------------------------------------
+// 035 Sección: Observabilidad
+// 036 Trazas con request-id para correlación.
+// 037 Métricas de latencia/errores.
+// 038 Alertas en umbrales críticos.
+// 039 -----------------------------------------------------------------------------
+// 040 Sección: Rendimiento
+// 041 Paginación en listados extensos.
+// 042 Índices adecuados en BD.
+// 043 Caché para lecturas frecuentes.
+// 044 -----------------------------------------------------------------------------
+// 045 Sección: Configuración
+// 046 Variables de entorno (dotenv).
+// 047 Separación dev/staging/prod.
+// 048 No subir claves al repositorio.
+// 049 -----------------------------------------------------------------------------
+// 050 Sección: Versionado
+// 051 SemVer (MAJOR.MINOR.PATCH).
+// 052 Ramas: main/develop/feature/*.
+// 053 PRs con checklist y revisión.
+// 054 -----------------------------------------------------------------------------
+// 055 Sección: API
+// 056 OpenAPI/Swagger para contrato.
+// 057 Códigos HTTP correctos.
+// 058 Idempotencia cuando aplique.
+// 059 -----------------------------------------------------------------------------
+// 060 Sección: Base de datos
+// 061 Migraciones versionadas.
+// 062 Seeds para datos de prueba.
+// 063 Backups y restauración verificada.
+// 064 -----------------------------------------------------------------------------
+// 065 Sección: Seguridad de datos
+// 066 Cifrado/Hash robustos (password_hash).
+// 067 Principio de privilegio mínimo.
+// 068 Políticas de retención.
+// 069 -----------------------------------------------------------------------------
+// 070 Sección: CI/CD
+// 071 Lint, test y build en pipeline.
+// 072 Despliegue reproducible.
+// 073 Rollback planificado.
+// 074 -----------------------------------------------------------------------------
+// 075 Sección: Estilo de respuestas
+// 076 Formato JSON uniforme: { status, data, error }.
+// 077 Mensajes claros y accionables.
+// 078 Sin filtrar detalles internos.
+// 079 -----------------------------------------------------------------------------
+// 080 Sección: Internacionalización
+// 081 Soporte para texto localizado.
+// 082 Formatos regionales (fecha/número).
+// 083 Codificación UTF-8.
+// 084 -----------------------------------------------------------------------------
+// 085 Sección: Accesibilidad (si aplica a vistas servidor)
+// 086 Etiquetas/roles correctos en HTML.
+// 087 Contraste y foco visible.
+// 088 Navegación por teclado.
+// 089 -----------------------------------------------------------------------------
+// 090 Sección: Monitoreo
+// 091 Error tracking (Sentry, etc.).
+// 092 Health checks (liveness/readiness).
+// 093 Dashboards por servicio.
+// 094 -----------------------------------------------------------------------------
+// 095 Sección: Cache y caducidad
+// 096 Control de headers Cache-Control.
+// 097 ETags donde sea apropiado.
+// 098 Invalidaciones consistentes.
+// 099 -----------------------------------------------------------------------------
+// 100 Sección: Seguridad Web
+// 101 CSRF/CORS configurados correctamente.
+// 102 XSS/SQLi prevenidos por diseño.
+// 103 Cabeceras seguras (CSP, HSTS).
+// 104 -----------------------------------------------------------------------------
+// 105 Sección: Reglas de negocio
+// 106 Encapsuladas en Services.
+// 107 Inmutabilidad donde aplique.
+// 108 Validaciones por capa.
+// 109 -----------------------------------------------------------------------------
+// 110 Sección: Logging
+// 111 Nivel configurable (DEBUG/INFO/WARN/ERROR).
+// 112 Campos estructurados (json).
+// 113 Rotación/retención adecuados.
+// 114 -----------------------------------------------------------------------------
+// 115 Sección: Documentación
+// 116 README de inicio rápido.
+// 117 Guía de contribución.
+// 118 Diagramas actualizados.
+// 119 -----------------------------------------------------------------------------
+// 120 Sección: Dependencias
+// 121 Versiones fijadas (composer.lock).
+// 122 Auditoría de vulnerabilidades.
+// 123 Renovaciones periódicas.
+// 124 -----------------------------------------------------------------------------
+// 125 Sección: Calidad
+// 126 Revisiones de código.
+// 127 Automatización de checks.
+// 128 Refactors controlados.
+// 129 -----------------------------------------------------------------------------
+// 130 Sección: Arquitectura
+// 131 Separación de capas clara.
+// 132 Dependencias dirigidas hacia adentro.
+// 133 Evitar acoplamiento innecesario.
+// 134 -----------------------------------------------------------------------------
+// 135 Sección: Contratos
+// 136 DTOs validados.
+// 137 Errores tipados.
+// 138 Versionado sin romper clientes.
+// 139 -----------------------------------------------------------------------------
+// 140 Sección: Migraciones
+// 141 Idempotentes, reversibles.
+// 142 Revisión en ambiente de prueba.
+// 143 Ventanas de mantenimiento.
+// 144 -----------------------------------------------------------------------------
+// 145 Sección: Seguridad operativa
+// 146 Gestión de secretos centralizada.
+// 147 Rotación de claves.
+// 148 Accesos auditables.
+// 149 -----------------------------------------------------------------------------
+// 150 Sección: Estado de la aplicación
+// 151 Evitar guardar estado en memoria si se escala horizontal.
+// 152 Usar almacenes externos cuando aplique.
+// 153 Diseñar para resiliencia.
+// 154 -----------------------------------------------------------------------------
+// 155 Sección: Interoperabilidad
+// 156 Contratos claros entre servicios.
+// 157 Retries con backoff.
+// 158 Tiempos de espera (timeouts).
+// 159 -----------------------------------------------------------------------------
+// 160 Sección: UX de API
+// 161 Mensajes consistentes y útiles.
+// 162 Documentar límites y cuotas.
+// 163 Dejar ejemplos de uso.
+// 164 -----------------------------------------------------------------------------
+// 165 Sección: Privacidad
+// 166 Minimización de datos.
+// 167 Consentimiento cuando aplique.
+// 168 Respetar normativa local.
+// 169 -----------------------------------------------------------------------------
+// 170 Sección: Entregables
+// 171 Artefactos versionados.
+// 172 Changelog legible.
+// 173 Sin sorpresas en despliegue.
+// 174 -----------------------------------------------------------------------------
+// 175 Sección: Mantenimiento
+// 176 Deprecaciones anunciadas.
+// 177 Plan de migración.
+// 178 Compatibilidad gradual.
+// 179 -----------------------------------------------------------------------------
+// 180 Sección: Prácticas de equipo
+// 181 Reuniones cortas y efectivas.
+// 182 Comunicación transparente.
+// 183 Responsabilidades claras.
+// 184 -----------------------------------------------------------------------------
+// 185 Sección: Roadmap
+// 186 Hitos priorizados.
+// 187 Criterios de “hecho” definidos.
+// 188 Iteraciones con feedback.
+// 189 -----------------------------------------------------------------------------
+// 190 Sección: Riesgos
+// 191 Identificación temprana.
+// 192 Mitigación documentada.
+// 193 Postmortems sin culpas.
+// 194 -----------------------------------------------------------------------------
+// 195 Cierre
+// 196 Este archivo puede dividirse por temas si lo prefieres.
+// 197 Aporta ~200 líneas de comentarios sin ejecutar nada.
+// 198 No requiere dependencias ni imports.
+// 199 Listo para VS Code o cualquier editor.
+// 200 Fin del archivo de comentarios.
