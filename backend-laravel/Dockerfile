@@ -1,4 +1,4 @@
-# PHP 8.2 FPM
+# Usamos PHP 8.2 FPM
 FROM php:8.2-fpm-alpine
 
 # Instalar dependencias del sistema y extensiones PHP
