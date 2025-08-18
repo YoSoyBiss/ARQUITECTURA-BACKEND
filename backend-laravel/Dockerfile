@@ -18,6 +18,9 @@ RUN apk add --no-cache \
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
+# Crear directorios para la aplicación y logs
+RUN mkdir -p /var/www/html /var/log/nginx
+
 WORKDIR /var/www/html
 
 # Copiar el código de la aplicación de Laravel
