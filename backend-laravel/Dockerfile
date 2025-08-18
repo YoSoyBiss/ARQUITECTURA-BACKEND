@@ -1,29 +1,35 @@
 FROM php:8.2-fpm-alpine
 
-# Instala las dependencias del sistema y extensiones de PHP
+# Instalar dependencias de sistema y extensiones
 RUN apk add --no-cache \
     nginx \
+    supervisor \
+    curl \
+    git \
+    unzip \
+    bash \
     $PHPIZE_DEPS \
-    && docker-php-ext-install \
-    pdo pdo_mysql \
-    && docker-php-ext-enable \
-    pdo_mysql
+    && docker-php-ext-install pdo pdo_mysql bcmath
 
-# Instala Composer
+# Instalar Composer
 COPY --from=composer:2.7.0 /usr/bin/composer /usr/local/bin/composer
 
-WORKDIR /app
+WORKDIR /var/www/html
 
-# Copia el código de la aplicación
+# Copiar código
 COPY . .
 
-# Instala las dependencias de Composer
-RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias de Laravel
+RUN composer install --no-dev --optimize-autoloader \
+    && chmod -R 775 storage bootstrap/cache
 
-# Configura los permisos de escritura
-RUN chmod -R 775 storage bootstrap/cache
+# Copiar configuración de Nginx
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-# Configuración de Nginx (para servir tu app)
-COPY --from=laravel/sail:latest /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-EXPOSE 8000
-CMD ["php-fpm", "--allow-to-run-as-root", "-D"] && nginx -g "daemon off;"
+# Copiar configuración de Supervisor para manejar php-fpm + nginx
+COPY ./supervisord.conf /etc/supervisord.conf
+
+EXPOSE 80
+
+# Ejecutar supervisor (levanta php-fpm y nginx juntos)
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
