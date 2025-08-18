@@ -38,6 +38,9 @@ COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./supervisord.conf /etc/supervisord.conf
 COPY ./docker/fastcgi_params /etc/nginx/fastcgi_params
 
+# Validar la configuración de Nginx para ver el error antes del despliegue
+RUN nginx -t
+
 EXPOSE 8080
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
