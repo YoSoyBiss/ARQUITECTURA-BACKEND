@@ -19,23 +19,27 @@ RUN apk add --no-cache \
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 # Crear directorios necesarios
-RUN mkdir -p /var/run /var/log/nginx /var/www/html \
-    && chown -R root:root /var/run /var/log/nginx
+RUN mkdir -p /var/run /var/log/nginx
+# NOTA: Los directorios de la aplicación se crean más adelante
+# con el comando COPY.
 
 WORKDIR /var/www/html
 
-# Copiar código de Laravel
+# Copiar el código de la aplicación de Laravel
 COPY . .
 
 # Instalar dependencias de Laravel
-RUN composer install --no-dev --optimize-autoloader \
-    && chmod -R 775 storage bootstrap/cache \
-    && chmod -R 755 public
+RUN composer install --no-dev --optimize-autoloader
 
-# Copiar configs
+# Configurar permisos para la aplicación de Laravel
+# Esto es crucial para que Nginx pueda escribir en la carpeta de almacenamiento
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Copiar archivos de configuración
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./supervisord.conf /etc/supervisord.conf
-COPY ./docker/fastcgi_params /var/www/html/docker/fastcgi_params
+COPY ./docker/fastcgi_params /etc/nginx/fastcgi_params
 
 EXPOSE 8080
 
