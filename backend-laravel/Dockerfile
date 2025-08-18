@@ -1,21 +1,21 @@
 # PHP 8.2 FPM
 FROM php:8.2-fpm-alpine
 
-# Instalar dependencias del sistema y extensiones PHP
+# Instalar dependencias y extensiones PHP
 RUN apk add --no-cache \
     nginx \
     supervisor \
+    bash \
     curl \
     git \
     unzip \
-    bash \
     $PHPIZE_DEPS \
     && docker-php-ext-install pdo pdo_mysql bcmath
 
-# Instalar Composer desde imagen oficial
+# Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-# Crear directorios que Nginx necesita
+# Crear directorios para Nginx
 RUN mkdir -p /var/run /var/log/nginx \
     && chown -R root:root /var/run /var/log/nginx
 
@@ -25,16 +25,16 @@ WORKDIR /var/www/html
 # Copiar código de Laravel
 COPY . .
 
-# Instalar dependencias de Laravel y permisos
+# Instalar dependencias Laravel y dar permisos
 RUN composer install --no-dev --optimize-autoloader \
     && chmod -R 775 storage bootstrap/cache
 
-# Copiar configuración de Nginx y Supervisor
+# Copiar configs
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./supervisord.conf /etc/supervisord.conf
 
-# Exponer puerto que Render asigna
+# Exponer puerto (Render ignora este, solo informativo)
 EXPOSE 10000
 
-# Ejecutar Supervisor para levantar php-fpm + nginx
+# Arrancar Supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
