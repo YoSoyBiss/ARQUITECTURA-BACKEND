@@ -3,11 +3,12 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const bcrypt = require('bcryptjs'); // Necesario para hashear la contraseña del admin
+const bcrypt = require('bcryptjs');
 
-// Importar los modelos necesarios
+// Importar los modelos y el controlador
 const Role = require('./models/Role');
 const User = require('./models/User');
+const userController = require('./controllers/UserController'); // Importar el controlador
 
 const app = express();
 app.use(cors());
@@ -39,40 +40,48 @@ mongoose.connect(process.env.MONGODB_URI, {
       console.log('ℹ️ Roles ya existen, no se crean nuevamente');
     }
 
-    // --- NUEVA LÓGICA PARA CREAR EL USUARIO ADMIN ---
+    // --- Lógica para crear el usuario admin usando el controlador ---
     const adminEmail = 'admin@gmail.com';
     const adminPassword = '123456';
     const adminName = 'admin';
 
-    // 1. Verificar si el usuario admin ya existe
+    // Verificar si el usuario admin ya existe
     const existingAdmin = await User.findOne({ email: adminEmail });
     if (!existingAdmin) {
-      // 2. Si no existe, encontrar el rol de admin
+      // Buscar el rol de admin
       const adminRole = await Role.findOne({ name: 'admin' });
 
       if (adminRole) {
-        // 3. Hashear la contraseña
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(adminPassword, salt);
+        // Crear objetos simulados (mock) de req y res para la función del controlador
+        const mockReq = {
+          body: {
+            name: adminName,
+            email: adminEmail,
+            password: adminPassword,
+            role: adminRole._id
+          }
+        };
 
-        // 4. Crear el nuevo usuario admin
-        const newAdminUser = new User({
-          name: adminName,
-          email: adminEmail,
-          password: hashedPassword,
-          role: adminRole._id
-        });
+        const mockRes = {
+          status: (statusCode) => {
+            console.log(`[Mock Res] Status: ${statusCode}`);
+            return mockRes;
+          },
+          json: (data) => {
+            console.log('[Mock Res] JSON Data:', data);
+          }
+        };
 
-        // 5. Guardar el usuario en la base de datos
-        await newAdminUser.save();
-        console.log('✅ Usuario admin creado exitosamente');
+        // Llamar a la función del controlador para crear el usuario
+        await userController.registerUser(mockReq, mockRes);
+        console.log('✅ Usuario admin creado exitosamente a través del controlador.');
       } else {
         console.error('❌ Error: El rol "admin" no fue encontrado, no se puede crear el usuario.');
       }
     } else {
       console.log('ℹ️ El usuario admin ya existe, no se crea nuevamente');
     }
-    // --- FIN DE LA NUEVA LÓGICA ---
+    // --- Fin de la nueva lógica ---
 
   } catch (error) {
     console.error('❌ Error durante la inicialización de la base de datos (roles/usuario admin):', error);
