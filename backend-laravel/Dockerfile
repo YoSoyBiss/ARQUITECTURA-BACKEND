@@ -9,13 +9,14 @@ RUN apk add --no-cache \
     curl \
     git \
     unzip \
+    gettext \
     $PHPIZE_DEPS \
     && docker-php-ext-install pdo pdo_mysql bcmath
 
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-# Crear directorios para Nginx
+# Crear directorios que Nginx necesita
 RUN mkdir -p /var/run /var/log/nginx \
     && chown -R root:root /var/run /var/log/nginx
 
@@ -29,11 +30,11 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader \
     && chmod -R 775 storage bootstrap/cache
 
-# Copiar configs
+# Copiar configs de Nginx y Supervisor
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./supervisord.conf /etc/supervisord.conf
 
-# Exponer puerto (Render ignora este, solo informativo)
+# Exponer puerto (Render lo asigna automáticamente)
 EXPOSE 10000
 
 # Arrancar Supervisor
