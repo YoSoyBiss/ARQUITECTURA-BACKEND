@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const Role = require('../models/Role');
 const mongoose = require('mongoose');
 
+
 // ... resto de imports
 
 
@@ -128,7 +129,7 @@ exports.getUserById = async (req, res) => {
 };
 
 // ✅ Login de usuario
-// ✅ Login de usuario
+
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -159,5 +160,77 @@ exports.loginUser = async (req, res) => {
     console.error('[UserController] loginUser:', error);
     res.status(500).json({ message: 'Error en el servidor al iniciar sesión' });
   }
+
 };
+
+// ... (todas las demás funciones: getAllUsers, deleteUser, etc.)
+
+// ✅ Nueva función para actualizar la contraseña
+exports.updatePassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { currentPassword, newPassword } = req.body;
+
+        // 1. Encontrar el usuario por ID
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // 2. Verificar la contraseña actual
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) {
+            // Si la contraseña actual no coincide, devolver un error 401
+            return res.status(401).json({ message: 'Contraseña actual incorrecta' });
+        }
+
+        // 3. Hashear y guardar la nueva contraseña
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(newPassword, salt);
+        await user.save();
+
+        res.status(200).json({ message: 'Contraseña actualizada correctamente' });
+
+    } catch (error) {
+        console.error('[UserController] updatePassword:', error);
+        res.status(500).json({ message: 'Error en el servidor al actualizar la contraseña' });
+    }
+};
+
+// ✅ Nueva función para actualizar la contraseña
+exports.updatePassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { currentPassword, newPassword } = req.body;
+
+        // 1. Encontrar el usuario por ID
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // 2. Verificar la contraseña actual
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) {
+            // Si la contraseña actual no coincide, devolver un error 401
+            return res.status(401).json({ message: 'Contraseña actual incorrecta' });
+        }
+
+        // 3. Hashear y guardar la nueva contraseña
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(newPassword, salt);
+        await user.save();
+
+        res.status(200).json({ message: 'Contraseña actualizada correctamente' });
+
+    } catch (error) {
+        console.error('[UserController] updatePassword:', error);
+        res.status(500).json({ message: 'Error en el servidor al actualizar la contraseña' });
+    }
+};
+
+
+
+// Asegúrate de exportar la nueva función
+
 

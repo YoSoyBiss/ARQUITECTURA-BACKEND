@@ -1,0 +1,213 @@
+<?php
+// ────────────────────────────────────────────────────────────────────────────
+// Archivo: BackendApi.sample.php  (SOLO COMENTARIOS, sin ejecutar nada)
+// Estilo: ejemplos de “código comentado” para que luzca técnico
+// Objetivo: documentar ideas sin afectar el runtime ni el autoload de Composer
+// ----------------------------------------------------------------------------
+
+// use App\Http\Controllers\ProductController;          // <- ejemplo de use
+// use Illuminate\Support\Facades\Route;                 // <- ejemplo de import
+// Route::get('/health', fn() => response()->json(['ok' => true])); // ejemplo
+
+/**
+ * Ejemplo de docblock de controlador
+ * class ProductController extends Controller {
+ *     public function index(Request $req): JsonResponse {
+ *         // $items = Product::query()->latest()->paginate(10);
+ *         // return response()->json($items);
+ *     }
+ * }
+ */
+
+// ----------------------- PSEUDOCÓDIGO DE SERVICIO --------------------------
+// final class ProductService {
+//     public function create(array $dto): array {
+//         // Validación (Rules, DTO)
+//         // $product = Product::create($dto);
+//         // return ['id' => $product->id];
+//     }
+// }
+
+// ----------------------- REPOSITORY (QUERY BUILDER) ------------------------
+// final class ProductRepository {
+//     /** @return array<int, array<string,mixed>> */
+//     public function list(string $search = ''): array {
+//         // return Product::query()
+//         //     ->when($search, fn($q) => $q->where('title','like',"%$search%"))
+//         //     ->limit(50)
+//         //     ->get()
+//         //     ->toArray();
+//     }
+// }
+
+// ----------------------- ROUTES (Laravel) ----------------------------------
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get   ('/products',      [ProductController::class, 'index']);
+//     Route::post  ('/products',      [ProductController::class, 'store']);
+//     Route::get   ('/products/{id}', [ProductController::class, 'show'])
+//         ->whereNumber('id');
+//     Route::put   ('/products/{id}', [ProductController::class, 'update']);
+//     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+// });
+
+// ----------------------- REQUEST VALIDATION (Rules) ------------------------
+// $rules = [
+//     'title'       => ['required','string','max:120'],
+//     'price'       => ['required','numeric','min:0'],
+//     'stock'       => ['required','integer','min:0'],
+//     'publisherId' => ['nullable','integer','exists:publishers,id'],
+// ];
+// $validated = validator($payload, $rules)->validate();
+
+// ----------------------- SQL (comentado) -----------------------------------
+// SELECT id, title, price, stock
+// FROM products
+// WHERE deleted_at IS NULL
+//   AND (title LIKE '%term%' OR publisher_id = :pid)
+// ORDER BY created_at DESC
+// LIMIT 50;
+
+// ----------------------- JSON (comentado) ----------------------------------
+// {
+//   "id": 123,
+//   "title": "Quijote",
+//   "price": 99.90,
+//   "stock": 4,
+//   "authors": [{"id":1,"name":"Miguel"}],
+//   "genres":  [{"id":9,"name":"Clásico"}]
+// }
+
+// ----------------------- ENV (comentado) -----------------------------------
+// APP_ENV=local
+// APP_DEBUG=true
+// APP_URL=http://127.0.0.1:8000
+// DB_CONNECTION=mysql
+// DB_HOST=127.0.0.1
+// DB_DATABASE=libros
+// DB_USERNAME=root
+// DB_PASSWORD=secret
+
+// ----------------------- MIDDLEWARES (comentado) ---------------------------
+// Kernel.php -> protected $routeMiddleware = [
+//     'role'         => \App\Http\Middleware\RoleMiddleware::class,
+//     'requireAuth'  => \App\Http\Middleware\RequireAuthSession::class,
+// ];
+
+// ----------------------- SEEDER (comentado) --------------------------------
+// class ProductSeeder extends Seeder {
+//     public function run(): void {
+//         // Product::factory()->count(20)->create();
+//     }
+// }
+
+// ----------------------- MIGRATION (comentado) -----------------------------
+// Schema::create('products', function (Blueprint $table) {
+//     $table->id();
+//     $table->string('title', 120);
+//     $table->decimal('price', 10, 2)->default(0);
+//     $table->unsignedInteger('stock')->default(0);
+//     $table->foreignId('publisher_id')->nullable()->constrained();
+//     $table->timestamps();
+//     $table->softDeletes();
+// });
+
+// ----------------------- RESPUESTAS HTTP (comentado) -----------------------
+// return response()->json(['message' => 'created'], 201);
+// return response()->noContent();
+// return response()->json(['error' => 'not_found'], 404);
+
+// ----------------------- MANEJO DE ERRORES (comentado) ---------------------
+// try {
+//     // lógica
+// } catch (\Throwable $e) {
+//     // report($e);
+//     // return response()->json(['error' => 'internal'], 500);
+// }
+
+// ----------------------- AUTH (comentado) ----------------------------------
+// Sanctum: token basado en sesión/cookies para SPA.
+// Passport/JWT: token portador para clientes móviles/externos.
+// Gate/Policy: autorización por acción/modelo.
+
+// ----------------------- CACHE (comentado) ---------------------------------
+// Cache::remember("products:list:$page", 60, function () {
+//     // return Product::query()->paginate(10);
+// });
+
+// ----------------------- Paginación (comentado) ----------------------------
+// $page = max(1, (int)($request->query('page', 1)));
+// $perPage = min(100, (int)($request->query('per_page', 10)));
+
+// ----------------------- TEST (PHPUnit) (comentado) -------------------------
+// public function test_products_index_returns_ok(): void {
+//     // $this->getJson('/api/products')->assertOk();
+// }
+
+// ----------------------- COMPOSER (comentado) ------------------------------
+// {
+//   "require": {
+//     "php": "^8.2",
+//     "laravel/framework": "^11.0"
+//   },
+//   "autoload": {
+//     "psr-4": { "App\\\": "app/" }
+//   }
+// }
+
+// ----------------------- REGEX (comentado) ---------------------------------
+// $emailRegex = '/^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$/';
+// preg_match($emailRegex, 'user@mail.com');
+
+// ----------------------- CURL (comentado) ----------------------------------
+// $ch = curl_init('http://127.0.0.1:9000/api/products');
+// curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true]);
+// $resp = curl_exec($ch);
+// curl_close($ch);
+
+// ----------------------- DTO (comentado) -----------------------------------
+// final class ProductDTO {
+//     public function __construct(
+//         public string $title,
+//         public float  $price,
+//         public int    $stock = 0,
+//     ) {}
+// }
+
+// ----------------------- TIPOS/UNIONES (comentado) -------------------------
+// function idOrNull(int|string|null $v): int|string|null { return $v; }
+
+// ----------------------- EVENTOS (comentado) --------------------------------
+// ProductCreated::dispatch($product);
+
+// ----------------------- COLAS/JOBS (comentado) ----------------------------
+// dispatch(new RecalculateStockJob($product->id))->onQueue('low');
+
+// ----------------------- OBSERVER (comentado) -------------------------------
+// class ProductObserver {
+//     public function created(Product $p): void {
+//         // Log::info("Creado {$p->id}");
+//     }
+// }
+
+// ----------------------- POLICIES (comentado) ------------------------------
+// public function update(User $user, Product $product): bool {
+//     // return $user->id === $product->owner_id || $user->isAdmin();
+// }
+
+// ----------------------- RESPUESTA DE ERROR (estructura) -------------------
+// {
+//   "status": "error",
+//   "code": 422,
+//   "message": "Validation failed",
+//   "errors": { "title": ["required"] }
+// }
+
+// ----------------------- EJEMPLO FRONTEND (comentado) ----------------------
+// fetch('/api/products').then(r => r.json()).then(setItems);
+
+// ----------------------- LARAVEL PIPES (comentado) -------------------------
+// return Pipeline::send($request)
+//     ->through([Authenticate::class, EnsureRole::class])
+//     ->then(fn($req) => $next($req));
+
+//kfsadkj
