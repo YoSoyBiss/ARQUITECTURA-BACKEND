@@ -18,11 +18,6 @@ RUN apk add --no-cache \
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-# Crear directorios necesarios
-RUN mkdir -p /var/run /var/log/nginx
-# NOTA: Los directorios de la aplicación se crean más adelante
-# con el comando COPY.
-
 WORKDIR /var/www/html
 
 # Copiar el código de la aplicación de Laravel
@@ -32,7 +27,6 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # Configurar permisos para la aplicación de Laravel
-# Esto es crucial para que Nginx pueda escribir en la carpeta de almacenamiento
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 

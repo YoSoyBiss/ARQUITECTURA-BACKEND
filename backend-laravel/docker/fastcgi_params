@@ -21,8 +21,4 @@ fastcgi_param  SERVER_ADDR        $server_addr;
 fastcgi_param  SERVER_PORT        $server_port;
 fastcgi_param  SERVER_NAME        $server_name;
 
-# La variable $https no está disponible en Nginx si no se usa HTTPS,
-# por lo que es mejor dejar que Nginx la maneje por sí solo
-# fastcgi_param  HTTPS              $https if_not_empty;
-
 fastcgi_param  REDIRECT_STATUS    200;
